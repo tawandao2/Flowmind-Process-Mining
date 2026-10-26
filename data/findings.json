@@ -1,0 +1,147 @@
+{
+  "dataset": "Road Traffic Fine Management Process (4TU.ResearchData; de Leoni and Mannhardt)",
+  "findings": [
+    {
+      "id": "overview",
+      "kind": "descriptive",
+      "title": "The data",
+      "facts": [
+        "150,370 traffic fines (cases), 561,470 events and 11 different steps, with fines created from 1999 to 2013"
+      ],
+      "must_cover": false,
+      "numbers": {}
+    },
+    {
+      "id": "paths",
+      "kind": "descriptive",
+      "title": "Most common paths",
+      "facts": [
+        "37.6% of fines follow Create Fine > Send Fine > Insert Fine Notification > Add penalty > Send for Credit Collection with a median of 638 days",
+        "30.8% of fines follow Create Fine > Payment with a median of 5 days",
+        "13.6% of fines follow Create Fine > Send Fine with a median of 101 days"
+      ],
+      "must_cover": true,
+      "numbers": {}
+    },
+    {
+      "id": "bottlenecks",
+      "kind": "bottleneck",
+      "title": "Where the waiting is",
+      "facts": [
+        "Add penalty to Send for Credit Collection: median wait 488 days, 58.7% of all elapsed time (57,182 occurrences)",
+        "Create Fine to Send Fine: median wait 88 days, 17.6% of all elapsed time (103,392 occurrences)",
+        "Insert Fine Notification to Add penalty: median wait 60 days, 8.4% of all elapsed time (72,334 occurrences)"
+      ],
+      "must_cover": false,
+      "numbers": {}
+    },
+    {
+      "id": "fixed_wait",
+      "kind": "descriptive",
+      "title": "A fixed waiting period",
+      "facts": [
+        "100.0% of waits from Insert Fine Notification to Add penalty are within 1 hour of exactly 60 days, which looks like a built in rule and not a delay"
+      ],
+      "must_cover": false,
+      "numbers": {}
+    },
+    {
+      "id": "caveat_censoring",
+      "kind": "caveat",
+      "title": "Unfinished cases",
+      "facts": [
+        "Fines created after 2009-10-22 are excluded because 99 percent of collections happen within 1334 days, and newer fines had not had time to finish; 87,354 sent fines from 2000 to 2009 are analysed"
+      ],
+      "must_cover": false,
+      "numbers": {}
+    },
+    {
+      "id": "bands",
+      "kind": "association",
+      "title": "Collection rate by sending delay (raw)",
+      "facts": [
+        "Fines sent after 0 to 30 days: 68.7% ended in credit collection (3,787 fines)",
+        "Fines sent after 30 to 60 days: 65.5% ended in credit collection (18,442 fines)",
+        "Fines sent after 60 to 90 days: 60.2% ended in credit collection (17,851 fines)",
+        "Fines sent after 90 to 120 days: 55.7% ended in credit collection (21,588 fines)",
+        "Fines sent after 120 to 10000 days: 50.3% ended in credit collection (25,686 fines)"
+      ],
+      "must_cover": true,
+      "numbers": {}
+    },
+    {
+      "id": "adjusted_effect",
+      "kind": "model",
+      "title": "Effect of sending delay after adjustment",
+      "facts": [
+        "After adjusting for year, amount, article, vehicle class and points, each extra 30 days before sending multiplies the odds of credit collection by 0.992 (95 percent interval 0.977 to 1.008, p = 0.32)"
+      ],
+      "must_cover": true,
+      "numbers": {
+        "metric_id": "model:send_delay_odds_ratio",
+        "n": 87354,
+        "odds_ratio_per_30_days": 0.9922850988227992,
+        "ci_low": 0.9771521252478285,
+        "ci_high": 1.0076524339503918,
+        "p_value": 0.32328465402742335,
+        "note": "association after adjusting for amount, article, vehicle class, points and year"
+      }
+    },
+    {
+      "id": "sensitivity",
+      "kind": "model",
+      "title": "Sensitivity to how year is handled",
+      "facts": [
+        "Ignoring year, the same factor is 0.833 (95 percent interval 0.824 to 0.842)",
+        "Treating year as a number, the same factor is 0.901 (95 percent interval 0.890 to 0.912)"
+      ],
+      "must_cover": true,
+      "numbers": {}
+    },
+    {
+      "id": "time_split",
+      "kind": "model",
+      "title": "Does the model predict later years",
+      "facts": [
+        "A model trained on fines created before 2006 ranks fines from 2006 onward with an AUC of 0.509 (0.5 is chance); the collection rate was 61.1% before and 51.8% after"
+      ],
+      "must_cover": true,
+      "numbers": {
+        "metric_id": "model:time_split_auc",
+        "train_cases": 55150,
+        "test_cases": 32204,
+        "auc": 0.5089851817699862,
+        "baseline_rate_train": 0.6110063463281958,
+        "baseline_rate_test": 0.5182896534591976
+      }
+    },
+    {
+      "id": "scenario",
+      "kind": "scenario",
+      "title": "What if fines were sent sooner",
+      "facts": [
+        "Modelled effect of sending every fine 30 days sooner: +0.2 percentage points on the collection rate (90 percent interval -0.1 to +0.5); this assumes the association is causal"
+      ],
+      "must_cover": true,
+      "numbers": {
+        "metric_id": "scenario:send_30_days_faster",
+        "days_faster": 30,
+        "current_collection_rate": 0.5768253314101244,
+        "change_pp_median": 0.17272544389812858,
+        "change_pp_p5": -0.1399361962461136,
+        "change_pp_p95": 0.5029920397203841,
+        "assumptions": "association treated as causal; other steps unchanged; uncertainty from model coefficients only"
+      }
+    },
+    {
+      "id": "caveat_association",
+      "kind": "caveat",
+      "title": "Association only",
+      "facts": [
+        "These results describe patterns in historical data. They do not show that one step makes another happen, and the data does not say what changed in the process over the years"
+      ],
+      "must_cover": true,
+      "numbers": {}
+    }
+  ]
+}

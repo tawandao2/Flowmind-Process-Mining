@@ -1,0 +1,9 @@
+-r requirements.txt
+duckdb
+pm4py
+statsmodels
+scipy
+numpy
+pydantic
+pytest
+google-generativeai

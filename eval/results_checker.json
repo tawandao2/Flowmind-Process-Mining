@@ -1,0 +1,31 @@
+{
+  "clean_report_status": "ready",
+  "kinds": {
+    "changed a number": {
+      "caught": 8,
+      "tried": 8
+    },
+    "invented finding id": {
+      "caught": 9,
+      "tried": 9
+    },
+    "causal wording": {
+      "caught": 9,
+      "tried": 9
+    },
+    "citing the wrong finding": {
+      "caught": 9,
+      "tried": 9
+    },
+    "dropping a required finding": {
+      "caught": 7,
+      "tried": 7
+    },
+    "invented extra claim": {
+      "caught": 9,
+      "tried": 9
+    }
+  },
+  "total_caught": 51,
+  "total_tried": 51
+}

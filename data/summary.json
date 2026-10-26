@@ -1,0 +1,973 @@
+{
+ "bundle": {
+  "dataset": "Road Traffic Fine Management Process (4TU.ResearchData; de Leoni and Mannhardt)",
+  "findings": [
+   {
+    "id": "overview",
+    "kind": "descriptive",
+    "title": "The data",
+    "facts": [
+     "150,370 traffic fines (cases), 561,470 events and 11 different steps, with fines created from 1999 to 2013"
+    ],
+    "must_cover": false,
+    "numbers": {}
+   },
+   {
+    "id": "paths",
+    "kind": "descriptive",
+    "title": "Most common paths",
+    "facts": [
+     "37.6% of fines follow Create Fine > Send Fine > Insert Fine Notification > Add penalty > Send for Credit Collection with a median of 638 days",
+     "30.8% of fines follow Create Fine > Payment with a median of 5 days",
+     "13.6% of fines follow Create Fine > Send Fine with a median of 101 days"
+    ],
+    "must_cover": true,
+    "numbers": {}
+   },
+   {
+    "id": "bottlenecks",
+    "kind": "bottleneck",
+    "title": "Where the waiting is",
+    "facts": [
+     "Add penalty to Send for Credit Collection: median wait 488 days, 58.7% of all elapsed time (57,182 occurrences)",
+     "Create Fine to Send Fine: median wait 88 days, 17.6% of all elapsed time (103,392 occurrences)",
+     "Insert Fine Notification to Add penalty: median wait 60 days, 8.4% of all elapsed time (72,334 occurrences)"
+    ],
+    "must_cover": false,
+    "numbers": {}
+   },
+   {
+    "id": "fixed_wait",
+    "kind": "descriptive",
+    "title": "A fixed waiting period",
+    "facts": [
+     "100.0% of waits from Insert Fine Notification to Add penalty are within 1 hour of exactly 60 days, which looks like a built in rule and not a delay"
+    ],
+    "must_cover": false,
+    "numbers": {}
+   },
+   {
+    "id": "caveat_censoring",
+    "kind": "caveat",
+    "title": "Unfinished cases",
+    "facts": [
+     "Fines created after 2009-10-22 are excluded because 99 percent of collections happen within 1334 days, and newer fines had not had time to finish; 87,354 sent fines from 2000 to 2009 are analysed"
+    ],
+    "must_cover": false,
+    "numbers": {}
+   },
+   {
+    "id": "bands",
+    "kind": "association",
+    "title": "Collection rate by sending delay (raw)",
+    "facts": [
+     "Fines sent after 0 to 30 days: 68.7% ended in credit collection (3,787 fines)",
+     "Fines sent after 30 to 60 days: 65.5% ended in credit collection (18,442 fines)",
+     "Fines sent after 60 to 90 days: 60.2% ended in credit collection (17,851 fines)",
+     "Fines sent after 90 to 120 days: 55.7% ended in credit collection (21,588 fines)",
+     "Fines sent after 120 to 10000 days: 50.3% ended in credit collection (25,686 fines)"
+    ],
+    "must_cover": true,
+    "numbers": {}
+   },
+   {
+    "id": "adjusted_effect",
+    "kind": "model",
+    "title": "Effect of sending delay after adjustment",
+    "facts": [
+     "After adjusting for year, amount, article, vehicle class and points, each extra 30 days before sending multiplies the odds of credit collection by 0.992 (95 percent interval 0.977 to 1.008, p = 0.32)"
+    ],
+    "must_cover": true,
+    "numbers": {
+     "metric_id": "model:send_delay_odds_ratio",
+     "n": 87354,
+     "odds_ratio_per_30_days": 0.9922850988227992,
+     "ci_low": 0.9771521252478285,
+     "ci_high": 1.0076524339503918,
+     "p_value": 0.32328465402742335,
+     "note": "association after adjusting for amount, article, vehicle class, points and year"
+    }
+   },
+   {
+    "id": "sensitivity",
+    "kind": "model",
+    "title": "Sensitivity to how year is handled",
+    "facts": [
+     "Ignoring year, the same factor is 0.833 (95 percent interval 0.824 to 0.842)",
+     "Treating year as a number, the same factor is 0.901 (95 percent interval 0.890 to 0.912)"
+    ],
+    "must_cover": true,
+    "numbers": {}
+   },
+   {
+    "id": "time_split",
+    "kind": "model",
+    "title": "Does the model predict later years",
+    "facts": [
+     "A model trained on fines created before 2006 ranks fines from 2006 onward with an AUC of 0.509 (0.5 is chance); the collection rate was 61.1% before and 51.8% after"
+    ],
+    "must_cover": true,
+    "numbers": {
+     "metric_id": "model:time_split_auc",
+     "train_cases": 55150,
+     "test_cases": 32204,
+     "auc": 0.5089851817699862,
+     "baseline_rate_train": 0.6110063463281958,
+     "baseline_rate_test": 0.5182896534591976
+    }
+   },
+   {
+    "id": "scenario",
+    "kind": "scenario",
+    "title": "What if fines were sent sooner",
+    "facts": [
+     "Modelled effect of sending every fine 30 days sooner: +0.2 percentage points on the collection rate (90 percent interval -0.1 to +0.5); this assumes the association is causal"
+    ],
+    "must_cover": true,
+    "numbers": {
+     "metric_id": "scenario:send_30_days_faster",
+     "days_faster": 30,
+     "current_collection_rate": 0.5768253314101244,
+     "change_pp_median": 0.17272544389812858,
+     "change_pp_p5": -0.1399361962461136,
+     "change_pp_p95": 0.5029920397203841,
+     "assumptions": "association treated as causal; other steps unchanged; uncertainty from model coefficients only"
+    }
+   },
+   {
+    "id": "caveat_association",
+    "kind": "caveat",
+    "title": "Association only",
+    "facts": [
+     "These results describe patterns in historical data. They do not show that one step makes another happen, and the data does not say what changed in the process over the years"
+    ],
+    "must_cover": true,
+    "numbers": {}
+   }
+  ]
+ },
+ "report": {
+  "status": "ready",
+  "attempts": 1,
+  "statements": [
+   {
+    "text": "Most common paths. 37.6% of fines follow Create Fine > Send Fine > Insert Fine Notification > Add penalty > Send for Credit Collection with a median of 638 days; 30.8% of fines follow Create Fine > Payment with a median of 5 days; 13.6% of fines follow Create Fine > Send Fine with a median of 101 days.",
+    "finding_ids": [
+     "paths"
+    ]
+   },
+   {
+    "text": "Where the waiting is. Add penalty to Send for Credit Collection: median wait 488 days, 58.7% of all elapsed time (57,182 occurrences); Create Fine to Send Fine: median wait 88 days, 17.6% of all elapsed time (103,392 occurrences); Insert Fine Notification to Add penalty: median wait 60 days, 8.4% of all elapsed time (72,334 occurrences).",
+    "finding_ids": [
+     "bottlenecks"
+    ]
+   },
+   {
+    "text": "Unfinished cases. Fines created after 2009-10-22 are excluded because 99 percent of collections happen within 1334 days, and newer fines had not had time to finish; 87,354 sent fines from 2000 to 2009 are analysed.",
+    "finding_ids": [
+     "caveat_censoring"
+    ]
+   },
+   {
+    "text": "Collection rate by sending delay (raw). Fines sent after 0 to 30 days: 68.7% ended in credit collection (3,787 fines); Fines sent after 30 to 60 days: 65.5% ended in credit collection (18,442 fines); Fines sent after 60 to 90 days: 60.2% ended in credit collection (17,851 fines); Fines sent after 90 to 120 days: 55.7% ended in credit collection (21,588 fines); Fines sent after 120 to 10000 days: 50.3% ended in credit collection (25,686 fines).",
+    "finding_ids": [
+     "bands"
+    ]
+   },
+   {
+    "text": "Effect of sending delay after adjustment. After adjusting for year, amount, article, vehicle class and points, each extra 30 days before sending multiplies the odds of credit collection by 0.992 (95 percent interval 0.977 to 1.008, p = 0.32).",
+    "finding_ids": [
+     "adjusted_effect"
+    ]
+   },
+   {
+    "text": "Sensitivity to how year is handled. Ignoring year, the same factor is 0.833 (95 percent interval 0.824 to 0.842); Treating year as a number, the same factor is 0.901 (95 percent interval 0.890 to 0.912).",
+    "finding_ids": [
+     "sensitivity"
+    ]
+   },
+   {
+    "text": "Does the model predict later years. A model trained on fines created before 2006 ranks fines from 2006 onward with an AUC of 0.509 (0.5 is chance); the collection rate was 61.1% before and 51.8% after.",
+    "finding_ids": [
+     "time_split"
+    ]
+   },
+   {
+    "text": "What if fines were sent sooner. Modelled effect of sending every fine 30 days sooner: +0.2 percentage points on the collection rate (90 percent interval -0.1 to +0.5); this assumes the association is causal.",
+    "finding_ids": [
+     "scenario"
+    ]
+   },
+   {
+    "text": "Association only. These results describe patterns in historical data. They do not show that one step makes another happen, and the data does not say what changed in the process over the years.",
+    "finding_ids": [
+     "caveat_association"
+    ]
+   }
+  ],
+  "problems": []
+ },
+ "transitions": [
+  {
+   "activity": "Add penalty",
+   "next_activity": "Send for Credit Collection",
+   "count": 57182,
+   "median_wait_h": 11711.0,
+   "mean_wait_h": 12657.12,
+   "p90_wait_h": 18887.0,
+   "total_wait_h": 723759570.0
+  },
+  {
+   "activity": "Create Fine",
+   "next_activity": "Send Fine",
+   "count": 103392,
+   "median_wait_h": 2112.0,
+   "mean_wait_h": 2102.57,
+   "p90_wait_h": 3265.0,
+   "total_wait_h": 217389042.0
+  },
+  {
+   "activity": "Insert Fine Notification",
+   "next_activity": "Add penalty",
+   "count": 72334,
+   "median_wait_h": 1440.0,
+   "mean_wait_h": 1440.14,
+   "p90_wait_h": 1441.0,
+   "total_wait_h": 104171147.0
+  },
+  {
+   "activity": "Add penalty",
+   "next_activity": "Payment",
+   "count": 18621,
+   "median_wait_h": 1704.0,
+   "mean_wait_h": 3864.67,
+   "p90_wait_h": 9889.0,
+   "total_wait_h": 71963931.0
+  },
+  {
+   "activity": "Send Fine",
+   "next_activity": "Insert Fine Notification",
+   "count": 79757,
+   "median_wait_h": 360.0,
+   "mean_wait_h": 417.17,
+   "p90_wait_h": 721.0,
+   "total_wait_h": 33271936.0
+  },
+  {
+   "activity": "Payment",
+   "next_activity": "Send for Credit Collection",
+   "count": 1538,
+   "median_wait_h": 10031.0,
+   "mean_wait_h": 10663.02,
+   "p90_wait_h": 16742.1,
+   "total_wait_h": 16399720.0
+  },
+  {
+   "activity": "Add penalty",
+   "next_activity": "Send Appeal to Prefecture",
+   "count": 2915,
+   "median_wait_h": 504.0,
+   "mean_wait_h": 5512.3,
+   "p90_wait_h": 24278.4,
+   "total_wait_h": 16068363.0
+  },
+  {
+   "activity": "Create Fine",
+   "next_activity": "Payment",
+   "count": 46952,
+   "median_wait_h": 120.0,
+   "mean_wait_h": 251.57,
+   "p90_wait_h": 672.0,
+   "total_wait_h": 11811922.0
+  },
+  {
+   "activity": "Payment",
+   "next_activity": "Payment",
+   "count": 4306,
+   "median_wait_h": 1271.0,
+   "mean_wait_h": 2302.24,
+   "p90_wait_h": 5711.0,
+   "total_wait_h": 9913461.0
+  },
+  {
+   "activity": "Send Fine",
+   "next_activity": "Payment",
+   "count": 3300,
+   "median_wait_h": 768.0,
+   "mean_wait_h": 1193.86,
+   "p90_wait_h": 1872.0,
+   "total_wait_h": 3939722.0
+  },
+  {
+   "activity": "Notify Result Appeal to Offender",
+   "next_activity": "Send for Credit Collection",
+   "count": 257,
+   "median_wait_h": 14111.0,
+   "mean_wait_h": 14285.56,
+   "p90_wait_h": 19824.0,
+   "total_wait_h": 3671390.0
+  },
+  {
+   "activity": "Insert Date Appeal to Prefecture",
+   "next_activity": "Send Appeal to Prefecture",
+   "count": 1159,
+   "median_wait_h": 672.0,
+   "mean_wait_h": 3027.95,
+   "p90_wait_h": 1852.8,
+   "total_wait_h": 3509396.0
+  },
+  {
+   "activity": "Payment",
+   "next_activity": "Add penalty",
+   "count": 3902,
+   "median_wait_h": 817.0,
+   "mean_wait_h": 796.33,
+   "p90_wait_h": 1369.0,
+   "total_wait_h": 3107280.0
+  },
+  {
+   "activity": "Insert Fine Notification",
+   "next_activity": "Insert Date Appeal to Prefecture",
+   "count": 3327,
+   "median_wait_h": 816.0,
+   "mean_wait_h": 796.02,
+   "p90_wait_h": 1344.0,
+   "total_wait_h": 2648345.0
+  },
+  {
+   "activity": "Insert Fine Notification",
+   "next_activity": "Payment",
+   "count": 3891,
+   "median_wait_h": 600.0,
+   "mean_wait_h": 638.18,
+   "p90_wait_h": 1272.0,
+   "total_wait_h": 2483147.0
+  },
+  {
+   "activity": "Insert Date Appeal to Prefecture",
+   "next_activity": "Add penalty",
+   "count": 2933,
+   "median_wait_h": 552.0,
+   "mean_wait_h": 579.33,
+   "p90_wait_h": 1151.0,
+   "total_wait_h": 1699174.0
+  },
+  {
+   "activity": "Notify Result Appeal to Offender",
+   "next_activity": "Payment",
+   "count": 391,
+   "median_wait_h": 647.0,
+   "mean_wait_h": 2081.63,
+   "p90_wait_h": 7055.0,
+   "total_wait_h": 813917.0
+  },
+  {
+   "activity": "Send Appeal to Prefecture",
+   "next_activity": "Receive Result Appeal from Prefecture",
+   "count": 606,
+   "median_wait_h": 1103.0,
+   "mean_wait_h": 1273.39,
+   "p90_wait_h": 2459.5,
+   "total_wait_h": 771673.0
+  },
+  {
+   "activity": "Appeal to Judge",
+   "next_activity": "Send for Credit Collection",
+   "count": 32,
+   "median_wait_h": 22068.0,
+   "mean_wait_h": 21772.16,
+   "p90_wait_h": 28635.8,
+   "total_wait_h": 696709.0
+  },
+  {
+   "activity": "Appeal to Judge",
+   "next_activity": "Payment",
+   "count": 70,
+   "median_wait_h": 8112.5,
+   "mean_wait_h": 9359.4,
+   "p90_wait_h": 16296.0,
+   "total_wait_h": 655158.0
+  },
+  {
+   "activity": "Payment",
+   "next_activity": "Send Fine",
+   "count": 569,
+   "median_wait_h": 888.0,
+   "mean_wait_h": 1071.91,
+   "p90_wait_h": 2256.0,
+   "total_wait_h": 609915.0
+  },
+  {
+   "activity": "Add penalty",
+   "next_activity": "Insert Date Appeal to Prefecture",
+   "count": 658,
+   "median_wait_h": 168.0,
+   "mean_wait_h": 911.09,
+   "p90_wait_h": 2150.8,
+   "total_wait_h": 599494.0
+  },
+  {
+   "activity": "Receive Result Appeal from Prefecture",
+   "next_activity": "Notify Result Appeal to Offender",
+   "count": 829,
+   "median_wait_h": 312.0,
+   "mean_wait_h": 700.26,
+   "p90_wait_h": 1900.6,
+   "total_wait_h": 580516.0
+  },
+  {
+   "activity": "Add penalty",
+   "next_activity": "Receive Result Appeal from Prefecture",
+   "count": 351,
+   "median_wait_h": 936.0,
+   "mean_wait_h": 1198.75,
+   "p90_wait_h": 2136.0,
+   "total_wait_h": 420761.0
+  },
+  {
+   "activity": "Send for Credit Collection",
+   "next_activity": "Send Appeal to Prefecture",
+   "count": 16,
+   "median_wait_h": 24001.0,
+   "mean_wait_h": 19771.0,
+   "p90_wait_h": 24001.0,
+   "total_wait_h": 316336.0
+  },
+  {
+   "activity": "Insert Fine Notification",
+   "next_activity": "Appeal to Judge",
+   "count": 290,
+   "median_wait_h": 744.0,
+   "mean_wait_h": 726.32,
+   "p90_wait_h": 1368.0,
+   "total_wait_h": 210634.0
+  },
+  {
+   "activity": "Appeal to Judge",
+   "next_activity": "Add penalty",
+   "count": 281,
+   "median_wait_h": 672.0,
+   "mean_wait_h": 688.72,
+   "p90_wait_h": 1392.0,
+   "total_wait_h": 193529.0
+  },
+  {
+   "activity": "Send Appeal to Prefecture",
+   "next_activity": "Add penalty",
+   "count": 347,
+   "median_wait_h": 480.0,
+   "mean_wait_h": 539.98,
+   "p90_wait_h": 1113.6,
+   "total_wait_h": 187372.0
+  },
+  {
+   "activity": "Add penalty",
+   "next_activity": "Appeal to Judge",
+   "count": 80,
+   "median_wait_h": 144.0,
+   "mean_wait_h": 1857.32,
+   "p90_wait_h": 4660.0,
+   "total_wait_h": 148586.0
+  },
+  {
+   "activity": "Appeal to Judge",
+   "next_activity": "Send Appeal to Prefecture",
+   "count": 9,
+   "median_wait_h": 14689.0,
+   "mean_wait_h": 15816.56,
+   "p90_wait_h": 37181.8,
+   "total_wait_h": 142349.0
+  },
+  {
+   "activity": "Send Fine",
+   "next_activity": "Insert Date Appeal to Prefecture",
+   "count": 161,
+   "median_wait_h": 672.0,
+   "mean_wait_h": 872.27,
+   "p90_wait_h": 1824.0,
+   "total_wait_h": 140436.0
+  },
+  {
+   "activity": "Receive Result Appeal from Prefecture",
+   "next_activity": "Send Appeal to Prefecture",
+   "count": 15,
+   "median_wait_h": 72.0,
+   "mean_wait_h": 8723.33,
+   "p90_wait_h": 41439.4,
+   "total_wait_h": 130850.0
+  },
+  {
+   "activity": "Add penalty",
+   "next_activity": "Notify Result Appeal to Offender",
+   "count": 53,
+   "median_wait_h": 1680.0,
+   "mean_wait_h": 1662.45,
+   "p90_wait_h": 3963.8,
+   "total_wait_h": 88110.0
+  },
+  {
+   "activity": "Notify Result Appeal to Offender",
+   "next_activity": "Appeal to Judge",
+   "count": 145,
+   "median_wait_h": 528.0,
+   "mean_wait_h": 564.21,
+   "p90_wait_h": 892.8,
+   "total_wait_h": 81811.0
+  },
+  {
+   "activity": "Insert Date Appeal to Prefecture",
+   "next_activity": "Receive Result Appeal from Prefecture",
+   "count": 35,
+   "median_wait_h": 1585.0,
+   "mean_wait_h": 1991.94,
+   "p90_wait_h": 4100.2,
+   "total_wait_h": 69718.0
+  },
+  {
+   "activity": "Send Appeal to Prefecture",
+   "next_activity": "Payment",
+   "count": 20,
+   "median_wait_h": 1704.0,
+   "mean_wait_h": 3202.65,
+   "p90_wait_h": 5832.9,
+   "total_wait_h": 64053.0
+  },
+  {
+   "activity": "Receive Result Appeal from Prefecture",
+   "next_activity": "Payment",
+   "count": 36,
+   "median_wait_h": 1391.5,
+   "mean_wait_h": 1587.69,
+   "p90_wait_h": 3215.0,
+   "total_wait_h": 57157.0
+  },
+  {
+   "activity": "Notify Result Appeal to Offender",
+   "next_activity": "Send Appeal to Prefecture",
+   "count": 3,
+   "median_wait_h": 15576.0,
+   "mean_wait_h": 15464.33,
+   "p90_wait_h": 15595.2,
+   "total_wait_h": 46393.0
+  },
+  {
+   "activity": "Insert Date Appeal to Prefecture",
+   "next_activity": "Payment",
+   "count": 14,
+   "median_wait_h": 792.5,
+   "mean_wait_h": 2261.29,
+   "p90_wait_h": 4661.5,
+   "total_wait_h": 31658.0
+  },
+  {
+   "activity": "Create Fine",
+   "next_activity": "Insert Date Appeal to Prefecture",
+   "count": 22,
+   "median_wait_h": 875.5,
+   "mean_wait_h": 1058.14,
+   "p90_wait_h": 2085.6,
+   "total_wait_h": 23279.0
+  },
+  {
+   "activity": "Insert Date Appeal to Prefecture",
+   "next_activity": "Send Fine",
+   "count": 15,
+   "median_wait_h": 1392.0,
+   "mean_wait_h": 1272.27,
+   "p90_wait_h": 2674.6,
+   "total_wait_h": 19084.0
+  },
+  {
+   "activity": "Receive Result Appeal from Prefecture",
+   "next_activity": "Add penalty",
+   "count": 51,
+   "median_wait_h": 312.0,
+   "mean_wait_h": 324.24,
+   "p90_wait_h": 648.0,
+   "total_wait_h": 16536.0
+  },
+  {
+   "activity": "Payment",
+   "next_activity": "Insert Fine Notification",
+   "count": 74,
+   "median_wait_h": 144.0,
+   "mean_wait_h": 184.58,
+   "p90_wait_h": 384.7,
+   "total_wait_h": 13659.0
+  },
+  {
+   "activity": "Receive Result Appeal from Prefecture",
+   "next_activity": "Send for Credit Collection",
+   "count": 1,
+   "median_wait_h": 12984.0,
+   "mean_wait_h": 12984.0,
+   "p90_wait_h": 12984.0,
+   "total_wait_h": 12984.0
+  },
+  {
+   "activity": "Send Appeal to Prefecture",
+   "next_activity": "Notify Result Appeal to Offender",
+   "count": 4,
+   "median_wait_h": 3467.5,
+   "mean_wait_h": 3113.5,
+   "p90_wait_h": 4391.0,
+   "total_wait_h": 12454.0
+  },
+  {
+   "activity": "Appeal to Judge",
+   "next_activity": "Receive Result Appeal from Prefecture",
+   "count": 1,
+   "median_wait_h": 12071.0,
+   "mean_wait_h": 12071.0,
+   "p90_wait_h": 12071.0,
+   "total_wait_h": 12071.0
+  },
+  {
+   "activity": "Insert Fine Notification",
+   "next_activity": "Send Appeal to Prefecture",
+   "count": 16,
+   "median_wait_h": 612.0,
+   "mean_wait_h": 620.88,
+   "p90_wait_h": 1020.0,
+   "total_wait_h": 9934.0
+  },
+  {
+   "activity": "Receive Result Appeal from Prefecture",
+   "next_activity": "Appeal to Judge",
+   "count": 13,
+   "median_wait_h": 144.0,
+   "mean_wait_h": 673.77,
+   "p90_wait_h": 1718.2,
+   "total_wait_h": 8759.0
+  },
+  {
+   "activity": "Appeal to Judge",
+   "next_activity": "Send Fine",
+   "count": 4,
+   "median_wait_h": 1895.0,
+   "mean_wait_h": 2069.75,
+   "p90_wait_h": 3146.8,
+   "total_wait_h": 8279.0
+  },
+  {
+   "activity": "Appeal to Judge",
+   "next_activity": "Notify Result Appeal to Offender",
+   "count": 9,
+   "median_wait_h": 480.0,
+   "mean_wait_h": 784.0,
+   "p90_wait_h": 1977.6,
+   "total_wait_h": 7056.0
+  },
+  {
+   "activity": "Send Appeal to Prefecture",
+   "next_activity": "Send for Credit Collection",
+   "count": 3,
+   "median_wait_h": 2207.0,
+   "mean_wait_h": 2207.0,
+   "p90_wait_h": 2207.0,
+   "total_wait_h": 6621.0
+  },
+  {
+   "activity": "Send Fine",
+   "next_activity": "Appeal to Judge",
+   "count": 10,
+   "median_wait_h": 624.0,
+   "mean_wait_h": 660.0,
+   "p90_wait_h": 1020.0,
+   "total_wait_h": 6600.0
+  },
+  {
+   "activity": "Insert Date Appeal to Prefecture",
+   "next_activity": "Appeal to Judge",
+   "count": 7,
+   "median_wait_h": 192.0,
+   "mean_wait_h": 915.29,
+   "p90_wait_h": 2390.0,
+   "total_wait_h": 6407.0
+  },
+  {
+   "activity": "Send Appeal to Prefecture",
+   "next_activity": "Send Fine",
+   "count": 7,
+   "median_wait_h": 768.0,
+   "mean_wait_h": 895.0,
+   "p90_wait_h": 1834.0,
+   "total_wait_h": 6265.0
+  },
+  {
+   "activity": "Create Fine",
+   "next_activity": "Appeal to Judge",
+   "count": 4,
+   "median_wait_h": 792.0,
+   "mean_wait_h": 1464.25,
+   "p90_wait_h": 3168.7,
+   "total_wait_h": 5857.0
+  },
+  {
+   "activity": "Payment",
+   "next_activity": "Appeal to Judge",
+   "count": 2,
+   "median_wait_h": 2627.5,
+   "mean_wait_h": 2627.5,
+   "p90_wait_h": 3135.9,
+   "total_wait_h": 5255.0
+  },
+  {
+   "activity": "Appeal to Judge",
+   "next_activity": "Insert Date Appeal to Prefecture",
+   "count": 15,
+   "median_wait_h": 240.0,
+   "mean_wait_h": 300.8,
+   "p90_wait_h": 729.6,
+   "total_wait_h": 4512.0
+  },
+  {
+   "activity": "Insert Date Appeal to Prefecture",
+   "next_activity": "Insert Fine Notification",
+   "count": 25,
+   "median_wait_h": 0.0,
+   "mean_wait_h": 104.68,
+   "p90_wait_h": 254.4,
+   "total_wait_h": 2617.0
+  },
+  {
+   "activity": "Payment",
+   "next_activity": "Receive Result Appeal from Prefecture",
+   "count": 2,
+   "median_wait_h": 1224.5,
+   "mean_wait_h": 1224.5,
+   "p90_wait_h": 1819.3,
+   "total_wait_h": 2449.0
+  },
+  {
+   "activity": "Insert Fine Notification",
+   "next_activity": "Receive Result Appeal from Prefecture",
+   "count": 2,
+   "median_wait_h": 1176.0,
+   "mean_wait_h": 1176.0,
+   "p90_wait_h": 1348.8,
+   "total_wait_h": 2352.0
+  },
+  {
+   "activity": "Send Fine",
+   "next_activity": "Send Appeal to Prefecture",
+   "count": 4,
+   "median_wait_h": 348.0,
+   "mean_wait_h": 552.25,
+   "p90_wait_h": 1236.7,
+   "total_wait_h": 2209.0
+  },
+  {
+   "activity": "Send Appeal to Prefecture",
+   "next_activity": "Appeal to Judge",
+   "count": 4,
+   "median_wait_h": 492.0,
+   "mean_wait_h": 498.0,
+   "p90_wait_h": 604.8,
+   "total_wait_h": 1992.0
+  },
+  {
+   "activity": "Notify Result Appeal to Offender",
+   "next_activity": "Add penalty",
+   "count": 12,
+   "median_wait_h": 120.0,
+   "mean_wait_h": 156.0,
+   "p90_wait_h": 235.2,
+   "total_wait_h": 1872.0
+  },
+  {
+   "activity": "Payment",
+   "next_activity": "Send Appeal to Prefecture",
+   "count": 4,
+   "median_wait_h": 336.0,
+   "mean_wait_h": 450.0,
+   "p90_wait_h": 873.6,
+   "total_wait_h": 1800.0
+  },
+  {
+   "activity": "Send Appeal to Prefecture",
+   "next_activity": "Insert Fine Notification",
+   "count": 4,
+   "median_wait_h": 60.0,
+   "mean_wait_h": 228.0,
+   "p90_wait_h": 559.2,
+   "total_wait_h": 912.0
+  },
+  {
+   "activity": "Send Appeal to Prefecture",
+   "next_activity": "Insert Date Appeal to Prefecture",
+   "count": 2,
+   "median_wait_h": 420.0,
+   "mean_wait_h": 420.0,
+   "p90_wait_h": 429.6,
+   "total_wait_h": 840.0
+  },
+  {
+   "activity": "Payment",
+   "next_activity": "Notify Result Appeal to Offender",
+   "count": 1,
+   "median_wait_h": 600.0,
+   "mean_wait_h": 600.0,
+   "p90_wait_h": 600.0,
+   "total_wait_h": 600.0
+  },
+  {
+   "activity": "Receive Result Appeal from Prefecture",
+   "next_activity": "Insert Date Appeal to Prefecture",
+   "count": 1,
+   "median_wait_h": 360.0,
+   "mean_wait_h": 360.0,
+   "p90_wait_h": 360.0,
+   "total_wait_h": 360.0
+  },
+  {
+   "activity": "Notify Result Appeal to Offender",
+   "next_activity": "Receive Result Appeal from Prefecture",
+   "count": 2,
+   "median_wait_h": 108.0,
+   "mean_wait_h": 108.0,
+   "p90_wait_h": 194.4,
+   "total_wait_h": 216.0
+  },
+  {
+   "activity": "Payment",
+   "next_activity": "Insert Date Appeal to Prefecture",
+   "count": 2,
+   "median_wait_h": 60.0,
+   "mean_wait_h": 60.0,
+   "p90_wait_h": 88.8,
+   "total_wait_h": 120.0
+  }
+ ],
+ "variants": [
+  {
+   "variant": "Create Fine > Send Fine > Insert Fine Notification > Add penalty > Send for Credit Collection",
+   "cases": 56482,
+   "median_days": 638.0,
+   "share": 0.376
+  },
+  {
+   "variant": "Create Fine > Payment",
+   "cases": 46371,
+   "median_days": 5.0,
+   "share": 0.308
+  },
+  {
+   "variant": "Create Fine > Send Fine",
+   "cases": 20385,
+   "median_days": 101.0,
+   "share": 0.136
+  },
+  {
+   "variant": "Create Fine > Send Fine > Insert Fine Notification > Add penalty > Payment",
+   "cases": 9520,
+   "median_days": 422.958,
+   "share": 0.063
+  },
+  {
+   "variant": "Create Fine > Send Fine > Insert Fine Notification > Add penalty > Payment > Payment",
+   "cases": 3736,
+   "median_days": 271.021,
+   "share": 0.025
+  }
+ ],
+ "by_year": [
+  {
+   "year": 2000,
+   "rate": 0.7510400522065421,
+   "cases": 12259,
+   "median_delay_days": 49.041666666666664
+  },
+  {
+   "year": 2001,
+   "rate": 0.687583035258048,
+   "cases": 9785,
+   "median_delay_days": 64.0
+  },
+  {
+   "year": 2002,
+   "rate": 0.5240760295670539,
+   "cases": 9470,
+   "median_delay_days": 60.958333333333336
+  },
+  {
+   "year": 2003,
+   "rate": 0.6869438602167934,
+   "cases": 6181,
+   "median_delay_days": 93.0
+  },
+  {
+   "year": 2004,
+   "rate": 0.48918726235741444,
+   "cases": 8416,
+   "median_delay_days": 128.95833333333334
+  },
+  {
+   "year": 2005,
+   "rate": 0.49076225246155547,
+   "cases": 9039,
+   "median_delay_days": 123.95833333333333
+  },
+  {
+   "year": 2006,
+   "rate": 0.44282584884994525,
+   "cases": 9130,
+   "median_delay_days": 128.0
+  },
+  {
+   "year": 2007,
+   "rate": 0.5334802976026454,
+   "cases": 7258,
+   "median_delay_days": 105.0
+  },
+  {
+   "year": 2008,
+   "rate": 0.5428323842535281,
+   "cases": 8078,
+   "median_delay_days": 83.0
+  },
+  {
+   "year": 2009,
+   "rate": 0.5674592918066684,
+   "cases": 7738,
+   "median_delay_days": 108.0
+  }
+ ],
+ "bands": [
+  {
+   "band_days": "[0, 30)",
+   "cases": 3787,
+   "collection_rate": 0.6868,
+   "ci_low": 0.6719,
+   "ci_high": 0.7014
+  },
+  {
+   "band_days": "[30, 60)",
+   "cases": 18442,
+   "collection_rate": 0.6555,
+   "ci_low": 0.6486,
+   "ci_high": 0.6623
+  },
+  {
+   "band_days": "[60, 90)",
+   "cases": 17851,
+   "collection_rate": 0.6021,
+   "ci_low": 0.5949,
+   "ci_high": 0.6093
+  },
+  {
+   "band_days": "[90, 120)",
+   "cases": 21588,
+   "collection_rate": 0.5569,
+   "ci_low": 0.5502,
+   "ci_high": 0.5635
+  },
+  {
+   "band_days": "[120, 10000)",
+   "cases": 25686,
+   "collection_rate": 0.5033,
+   "ci_low": 0.4972,
+   "ci_high": 0.5095
+  }
+ ]
+}

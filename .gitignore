@@ -1,0 +1,9 @@
+data/raw/
+data/rtf.duckdb
+data/demo.duckdb
+*.xes
+*.xes.gz
+.env
+.venv/
+__pycache__/
+.pytest_cache/
