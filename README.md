@@ -21,6 +21,9 @@ Two more checks agree. A model trained on fines from before 2006 ranks later fin
 So the honest answer is that this data does not support the claim that sending sooner would improve collection. I think a result like that is worth more than a clean story, so I kept it as the headline.
 
 **[Live dashboard](https://flowmind-process-mining-krxaeyrh5vehqtfapzgdyr.streamlit.app/)**
+
+![Report view](assets/flowmind_report.gif)
+
 ![FlowMind demo](assets/flowmind_demo.gif)
 
 ## What else it found
