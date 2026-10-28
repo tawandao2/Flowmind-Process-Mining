@@ -2,6 +2,7 @@ import json, pathlib
 import pandas as pd
 import altair as alt
 import streamlit as st
+from src import pbi_view
 
 st.set_page_config(page_title="FlowMind", layout="wide")
 S = json.load(open(pathlib.Path(__file__).parent / "data" / "summary.json"))
@@ -15,7 +16,11 @@ st.info("**Headline.** The obvious story is that fines sent faster get collected
         "That pattern is real in the raw numbers, but it disappears once you account for the year. "
         "So this analysis does not support the claim that sending sooner would help.")
 
-t1, t2, t3, t4 = st.tabs(["Process map", "Where time goes", "The collection question", "Written report"])
+t0, t1, t2, t3, t4 = st.tabs(["Report", "Process map", "Where time goes", "The collection question", "Written report"])
+
+with t0:
+    pbi_view.render(S, F, json.load(open(pathlib.Path(__file__).parent / "eval" / "results_checker.json")))
+
 
 with t1:
     tr = pd.DataFrame(S["transitions"])
